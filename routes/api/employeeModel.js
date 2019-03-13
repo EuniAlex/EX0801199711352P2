@@ -54,7 +54,7 @@ function employeeModel(db){
     // que esten entre las edades indicadas por los parametros
     // ageLowLimit y ageHighLimit
     // solo mostrar name, age, email
-   /*empColl
+   empColl
     .find({"$and":[{"age":{"$gte":ageLowLimit}},{"age":{"lte":ageHighLimit}}]})
     .project({"email":1,"name":1,"age":1})
     .toArray((err,docs)=>{
@@ -63,7 +63,7 @@ function employeeModel(db){
       }else{
          handler(null,docs);
       }
-    });*/
+    });
   }
 
   lib.getEmployeesByTag = (tag, handler) => {
@@ -72,14 +72,31 @@ function employeeModel(db){
     // al menos una vez el tag dentro del arreglo
     // tags
     // mostrar solo name, email, tags
-    return handler(new Error("No Implementado"), null);
+    empColl
+    .find({"tag":{"$in": Array.isArray(tag)? tag:[tag]}})
+    .project({"email":1,"name":1,"tags":1})
+    .toArray((err,docs)=>{
+        if(err){
+           handler(new Error("No Implementado"), null);
+        }else{
+           handler(null,docs);
+        }
+    });
   }
 
   lib.addEmployeeATag = ( tag, id, handler) => {
     //Implementar
     //Se requiere agregar a un documento un nuevo tag
     // $push
-    return handler(new Error("No Implementado"), null);
+    var acutalTag = Array.isArray(tag)? tag: [tag];
+    var updateTag = {"$set": {"tag": acutalTag}};
+        empColl.updateOne({"_id": ObjectID(id)},updateTag,(err,res)=>{
+            if(err){
+                handler(err,null);
+            }else{
+                handler(null,res.result);
+            }// end if (err)
+        });
   }
 
   lib.removeEmployee = (id, handler) => {
