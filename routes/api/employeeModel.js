@@ -6,20 +6,46 @@ function employeeModel(db){
   lib.getEmployees = (handler)=>{
     // implementar
     // obtener todos los documentos
-    return handler(new Error("No Implementado"), null);
-  }
+    empColl.find({}).toArray(
+      (err,docs)=>{
+          if(err){
+            return handler(new Error("No Implementado"), null);
+          }else{
+            return handler(null,docs);
+          }
+      }
+    );//toArray
+  }//getEmployees
 
   lib.getEmployeesById = (id, handler) => {
     // implementar
     // Obtener un Documento solo mostrar
     // email, phone, name y age
-    return handler(new Error("No Implementado"), null);
+    empColl
+    .find({"_id":new ObjectID(id)})
+    .project({"email":1,"phone":1,"name":1,"age":1})
+    .toArray((err,docs)=>{
+        if(err){
+          return handler(new Error("No Implementado"), null);
+        }else{
+          return handler(null,docs);
+        }
+    });
   }
 
   lib.getEmployeesByCompany = (company, handler) => {
     // implementar
     // solo mostrar name, email, company
-    return handler(new Error("No Implementado"), null);
+    empColl
+    .find({"company":{"$in": Array.isArray(company)? company:[company]}})
+    .project({"email":1,"name":1,"company":1})
+    .toArray((err,docs)=>{
+        if(err){
+           handler(new Error("No Implementado"), null);
+        }else{
+           handler(null,docs);
+        }
+    });
   }
 
   lib.getEmployeesByAgeRange = (ageLowLimit, ageHighLimit, handler) => {
@@ -28,7 +54,16 @@ function employeeModel(db){
     // que esten entre las edades indicadas por los parametros
     // ageLowLimit y ageHighLimit
     // solo mostrar name, age, email
-    return handler(new Error("No Implementado"), null);
+   /*empColl
+    .find({"$and":[{"age":{"$gte":ageLowLimit}},{"age":{"lte":ageHighLimit}}]})
+    .project({"email":1,"name":1,"age":1})
+    .toArray((err,docs)=>{
+      if(err){
+         handler(new Error("No Implementado"), null);
+      }else{
+         handler(null,docs);
+      }
+    });*/
   }
 
   lib.getEmployeesByTag = (tag, handler) => {
