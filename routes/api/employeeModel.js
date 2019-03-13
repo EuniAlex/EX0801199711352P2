@@ -102,7 +102,13 @@ function employeeModel(db){
   lib.removeEmployee = (id, handler) => {
     //Implementar
     //Se requiere eliminar un documento de la colección
-    return handler(new Error("No Implementado"), null);
+    empColl.deleteOne({"_id":ObjectID(id)},(err,result)=>{
+      if(err) {
+        handler(err, null);
+      }else{
+        handler(null, result.result);
+      }
+    });
   }
 
   lib.increaseAgeToAll = (ageDelta, handler) => {

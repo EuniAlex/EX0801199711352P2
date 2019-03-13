@@ -12,7 +12,7 @@ function initEmployee(db) {
       GET       /bycompany/:company YA
       GET       /byagerange/:min/:max Ya 
       GET       /bytag/:tag Ya
-      POST      /addtag/:id              tag
+      POST      /addtag/:id        YA      tag
       DELETE    /delete/:id
       POST      /makeolder               age
    */
@@ -82,6 +82,16 @@ function initEmployee(db) {
         return res.status(200).json(result);
     });//end mongoModel
 });//end put
+
+router.delete('/delete/:id',(req,res,next)=>{
+    empModel.removeEmployee(req.params.id,(err,result)=>{
+      if(err){
+        console.log(err);
+        return res.status(500).json({error:"Murio"});
+      }
+        return res.status(200).json(result);
+    });
+});
 
   return router;
 }
